@@ -12,6 +12,7 @@ $(".weather").change(function(){
         }
 
         function callback(res){
+          console.log(res)
           let tempArr = [];
           let date = new Date();
           let day = Number(date.getDate());
@@ -39,10 +40,9 @@ $(".weather").change(function(){
               }
               return red;
           },{});
-          date = date.getUTCDate();
           for(let currDay = day; currDay < day+3; currDay++){
-            $("#outputList").append("<h3>"+date+"</h3><ul><li>Max Temp: "+maxArr[currDay].temps+"</li><li>Max Pressure: "+maxArr[currDay].pressureVal + "</li><li>Cloud Cover: "+maxArr[currDay].cloudCover+"</li><ul><br />");
-            date = date+1;
+            $("#outputList").append("<h3>"+date.toDateString()+"</h3><ul><li>Max Temp: "+maxArr[currDay].temps+"</li><li>Max Pressure: "+maxArr[currDay].pressureVal + "</li><li>Cloud Cover: "+maxArr[currDay].cloudCover+"</li><ul><br />");
+            date.setDate(date.getDate() + 1);
 
           }
         }
@@ -59,7 +59,6 @@ $(".weather").change(function(){
               if(selValue === 'city'){
                 queryString = "q="+apiInput;
                 query = url+queryString+apiKey;
-                //$.get(query, callback);
                 $.ajax({
                     url: query,
                     type: 'GET',
@@ -84,7 +83,9 @@ $(".weather").change(function(){
             }
             else{
               coordsInput = $("#coordsInput").val();
-              arr = coordsInput.split(",");
+              var arr = coordsInput.split(",").map(function(item) {
+                return item.trim();
+              });
 
               queryString = "lat="+arr[0]+"&lon="+arr[1];
               query = url+queryString+apiKey;
